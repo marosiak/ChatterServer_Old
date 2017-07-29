@@ -9,12 +9,12 @@ DataBase::DataBase(QObject *parent) : QObject(parent){
     execute("create table accounts (login varchar(20), password varchar(45))");
 }
 
-void DataBase::createAccount(QString login, QString password) {
+void DataBase::createAccount(QString& login, QString& password) {
     QString cmd = QString("insert into accounts values('%1', '%2')").arg(login).arg(password);
     execute(cmd);
 }
 
-bool DataBase::accountExist(QString login){
+bool DataBase::accountExist(const QString& login) const {
     QSqlQuery query;
     QString cmd = QString("SELECT * FROM accounts WHERE login=\"%1\"").arg(login);
     query.exec(cmd);

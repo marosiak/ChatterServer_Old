@@ -10,11 +10,11 @@ class DataBase : public QObject {
 
 public:
     explicit DataBase(QObject *parent = nullptr);
-    void createAccount(QString login, QString password);
-    bool accountExist(QString login);
-    QString getPassword(QString login);
+    void createAccount(QString& login, QString& password);
+    bool accountExist(const QString& login) const; //pretty sure this isn't mutating anything
+    QString getPassword(QString& login);
 private:
-    void execute(QString cmd);
+    void execute(QString& cmd);
 
 signals:
 

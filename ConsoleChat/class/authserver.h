@@ -9,14 +9,16 @@
 
 class AuthServer : public QObject {
     Q_OBJECT
+    
+    //reimplemented as init-list in ctor -> look .cpp file
+    //int returnPort = 3432;
+    //int requestPort = 3433;
 
 public:
     explicit AuthServer(QObject *parent = nullptr);
-    int returnPort = 3432;
-    int requestPort = 3433;
-    void returnError(QHostAddress targetIp, QString error);
-    void addAuthorizedAccount(QString account, QHostAddress ip);
-    bool checkIfAccountIsAutorized(QString account, QHostAddress ip);
+    void returnError(QHostAddress& targetIp, QString& error);
+    void addAuthorizedAccount(QString& account, QHostAddress& ip);
+    bool checkIfAccountIsAutorized(QString& account, QHostAddress& ip);
 signals:
 
 public slots:
@@ -25,8 +27,8 @@ public slots:
 private:
     QMap<QString, QString> authorizedAccounts;
     //authorizedAccounts["Nickname"] = "ip";
-    QUdpSocket *socket;
-    QUdpSocket *returnSocket;
+    QPointer<QUdpSocket> socket;
+    QPointer<QUdpSocket> returnSocket;
     QJsonObject objectFromString(const QString& in);
 };
 
