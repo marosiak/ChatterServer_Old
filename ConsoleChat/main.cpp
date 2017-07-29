@@ -5,7 +5,6 @@
 #include <./class/authserver.h>
 #include <./class/database.h>
 
-#include <windows.h> // remove if you want crossplatform
 
 int main(int argc, char *argv[]){
     QCoreApplication a(argc, argv);

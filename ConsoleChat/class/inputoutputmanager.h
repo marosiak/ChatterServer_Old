@@ -2,8 +2,6 @@
 #define INPUTOUTPUTMANAGER_H
 #include <windows.h>
 #include <iostream>
-//#include <stdlib.h> //!
-//#include <string.h> //!
 #include <cstdlib>
 #include <string>
 #include <chrono>
@@ -17,7 +15,6 @@ class InputOutputManager {
 public:
     InputOutputManager();
     void print(const std::string& message) const;
-
     void setHeaderText(const std::string &value);
 
 private:

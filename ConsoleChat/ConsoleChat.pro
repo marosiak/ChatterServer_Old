@@ -1,6 +1,6 @@
 QT += core network sql
 QT -= gui
-CONFIG += c++11
+CONFIG += c++14
 
 win32:OBJECTS_DIR = c:/syf/
 win32:MOC_DIR = c:/syf/

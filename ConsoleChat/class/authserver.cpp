@@ -9,12 +9,12 @@ AuthServer::AuthServer(QObject *parent) : QObject(parent), returnPort{3432}, req
     qDebug() << "Server started";
 }
 
-void AuthServer::returnError(QHostAddress& targetIp, QString& error){
-    QPointer<QUdpSocket> udp = new QUdpSocket(this); //wrapped into QPointer, will delete itself after getting out of scope
-    udp->bind(targetIp, returnPort);
+void AuthServer::returnError(QHostAddress targetIp, QString error){
+    returnSocket = new QUdpSocket(this); //wrapped into QPointer, will delete itself after getting out of scope
+    returnSocket->bind(targetIp, returnPort);
     QByteArray Data;
     Data.append(error);
-    udp->writeDatagram(Data, targetIp, returnPort);
+    returnSocket->writeDatagram(Data, targetIp, returnPort);
     qDebug() << "[Auth Error] "<<error<<" to "<<targetIp.toString();
 }
 
@@ -22,10 +22,13 @@ void AuthServer::addAuthorizedAccount(QString& account, QHostAddress& ip) {
     authorizedAccounts.insert(account, ip.toString());
 }
 
-bool AuthServer::checkIfAccountIsAutorized(QString& account, QHostAddress& ip){
+bool AuthServer::checkIfAccountIsAutorized(QString account, QHostAddress ip){
     for(const auto& e : authorizedAccounts.toStdMap()) {
-        qDebug() << e.first << "," << e.second << '\n';
+        if (account == e.first && ip.toString() == e.second) {
+            return true; // authorized
+        }
     }
+    return false;
 }
 
 QJsonObject AuthServer::objectFromString(const QString& in){

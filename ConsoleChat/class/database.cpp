@@ -6,12 +6,15 @@ DataBase::DataBase(QObject *parent) : QObject(parent){
     if (!db.open()) {
         qDebug() << "ERROR WHILE OPENING DB";
     }
+
     execute("create table accounts (login varchar(20), password varchar(45))");
 }
 
-void DataBase::createAccount(QString& login, QString& password) {
-    QString cmd = QString("insert into accounts values('%1', '%2')").arg(login).arg(password);
-    execute(cmd);
+void DataBase::createAccount(QString login, QString password) {
+    if (accountExist(login) == false) {
+        QString cmd = QString("insert into accounts values('%1', '%2')").arg(login).arg(password);
+        execute(cmd);
+    }
 }
 
 bool DataBase::accountExist(const QString& login) const {
@@ -36,7 +39,6 @@ QString DataBase::getPassword(QString login) {
         while (query.next()){
             if(query.value(0).toString() == login){
                 // exist
-                qDebug() << "[Database] "<<login<<" account pass is "<<query.value(1).toString();
                 return query.value(1).toString();
             }
         }
