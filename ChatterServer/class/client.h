@@ -41,7 +41,8 @@ private:
     QString lastMessageFromServer, login, password;
     bool isLogged = false;
     int port;
-    QUdpSocket* postSocket, socket;
+    QUdpSocket* postSocket;
+    QUdpSocket* socket;
     QHostAddress serverIp;
 
 };

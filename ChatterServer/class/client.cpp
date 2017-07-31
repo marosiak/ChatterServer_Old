@@ -19,6 +19,7 @@ void Client::registerRequest(){
 }
 
 void Client::start(){
+
     socket = new QUdpSocket(this);
     socket->bind(QHostAddress::LocalHost, port-1);
 

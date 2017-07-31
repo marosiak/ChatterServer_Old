@@ -26,13 +26,13 @@ public slots:
     void authRequestRecived();
 
 private:
+    QUdpSocket* socket;
+    QUdpSocket* returnSocket;
     int port;
     void addAuthorizedAccount(QString& account, QHostAddress& ip);
     QString getPassword(const QString login);
     int returnPort, requestPort;
     QMap<QString, QString> authorizedAccounts;
-    QUdpSocket* socket;
-    QUdpSocket* returnSocket;
     QJsonObject objectFromString(const QString& in);
 };
 

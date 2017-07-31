@@ -5,7 +5,7 @@ CONFIG += c++14
 win32:OBJECTS_DIR = c:/syf/
 win32:MOC_DIR = c:/syf/
 
-TARGET = ConsoleChat
+TARGET = ChatterServer
 CONFIG += console
 CONFIG -= app_bundle
 
