@@ -12,14 +12,21 @@ class AuthServer : public QObject {
 
 public:
     explicit AuthServer(QObject *parent = nullptr);
+    void start();
     void returnError(QHostAddress targetIp, QString error);
+    void returnMessage(QHostAddress targetIp, QString msg);
     bool checkIfAccountIsAutorized(QString account, QHostAddress ip);
+
+    int getPort() const;
+    void setPort(int value);
+
 signals:
 
 public slots:
     void authRequestRecived();
 
 private:
+    int port;
     void addAuthorizedAccount(QString& account, QHostAddress& ip);
     QString getPassword(const QString login);
     int returnPort, requestPort;

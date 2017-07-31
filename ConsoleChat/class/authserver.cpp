@@ -1,26 +1,37 @@
 #include "authserver.h"
 
-AuthServer::AuthServer(QObject *parent) : QObject(parent), returnPort{3432}, requestPort{3433} {
+AuthServer::AuthServer(QObject *parent) : QObject(parent){}
 
+void AuthServer::start(){
     socket = new QUdpSocket(this);
-    socket->bind(QHostAddress::LocalHost, requestPort); // wait for request for auth
+    socket->bind(QHostAddress::LocalHost, port); // wait for request for auth
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(authRequestRecived()));
     qDebug() << "Server started";
 }
 
 void AuthServer::returnError(QHostAddress targetIp, QString error){
-    returnSocket = new QUdpSocket(this); //wrapped into QPointer, will delete itself after getting out of scope
-    returnSocket->bind(targetIp, returnPort);
+    returnSocket = new QUdpSocket(this);
+    returnSocket->bind(targetIp, port-1);
     QByteArray Data;
     Data.append(error);
-    returnSocket->writeDatagram(Data, targetIp, returnPort);
+    returnSocket->writeDatagram(Data, targetIp, port-1);
     qDebug() << "[Auth Error] "<<error<<" to "<<targetIp.toString();
+}
+
+void AuthServer::returnMessage(QHostAddress targetIp, QString msg){
+    returnSocket = new QUdpSocket(this);
+    returnSocket->bind(targetIp, port-1);
+    QByteArray Data;
+    Data.append(msg);
+    returnSocket->writeDatagram(Data, targetIp, port-1);
+    qDebug() << "[Auth Message] "<<msg<<" to "<<targetIp.toString();
 }
 
 void AuthServer::addAuthorizedAccount(QString& account, QHostAddress& ip) {
     authorizedAccounts.insert(account, ip.toString());
 }
+
 
 bool AuthServer::checkIfAccountIsAutorized(QString account, QHostAddress ip){
     for(const auto& e : authorizedAccounts.toStdMap()) {
@@ -77,7 +88,6 @@ void AuthServer::authRequestRecived(){
         if (database.accountExist(login) == false) {
             database.createAccount(login, password);
         } else {
-            // return to error "This name is already in use."
             returnError(sender,"This name is already in use.");
         }
     }
@@ -89,7 +99,7 @@ void AuthServer::authRequestRecived(){
                 //login
                 qDebug() << "[Auth] password for "<<login<<" is correct";
                 addAuthorizedAccount(login, sender);
-                returnError(sender,"Access granted");
+                returnMessage(sender, "Access Granted");
             } else {
                 qDebug() << "[Auth Error] password for "<<login<<" is incorret";
                 returnError(sender, "Wrong password");
@@ -101,4 +111,14 @@ void AuthServer::authRequestRecived(){
         returnError(sender,"Wrong type of request");
     }
 
+}
+
+int AuthServer::getPort() const
+{
+    return port;
+}
+
+void AuthServer::setPort(int value)
+{
+    port = value;
 }

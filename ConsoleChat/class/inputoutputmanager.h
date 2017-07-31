@@ -16,6 +16,7 @@ public:
     InputOutputManager();
     void print(const std::string& message) const;
     void setHeaderText(const std::string &value);
+    void endl();
 
 private:
     HANDLE hOut;

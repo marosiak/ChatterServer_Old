@@ -28,7 +28,6 @@ bool DataBase::accountExist(const QString& login) const {
                 return true;
             }
         }
-        qDebug() << "[Database] Unknow account called "<<login;
         return false;
 }
 
