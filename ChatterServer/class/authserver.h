@@ -34,6 +34,7 @@ private:
     int returnPort, requestPort;
     QMap<QString, QString> authorizedAccounts;
     QJsonObject objectFromString(const QString& in);
+    DataBase* database;
 };
 
 #endif // AUTHSERVER_H
