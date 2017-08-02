@@ -101,17 +101,21 @@ void AuthServer::authRequestRecived(){
     }
     if(type == "login"){
         // login
-        if(database->accountExist(login)){
-            QString realPassword = database->getPassword(login);
-            if (password == realPassword) {
-                //login
-                qDebug() << "[Auth] password for "<<login<<" is correct";
-                addAuthorizedAccount(login, sender);
-                returnMessage(sender, "Access Granted");
-            } else {
-                qDebug() << "[Auth Error] password for "<<login<<" is incorret";
-                returnError(sender, "Wrong password");
+        if(login.length() >= 6) {
+            if(database->accountExist(login)){
+                QString realPassword = database->getPassword(login);
+                if (password == realPassword) {
+                    //login
+                    qDebug() << "[Auth] password for "<<login<<" is correct";
+                    addAuthorizedAccount(login, sender);
+                    returnMessage(sender, "Access Granted");
+                } else {
+                    qDebug() << "[Auth Error] password for "<<login<<" is incorret";
+                    returnError(sender, "Wrong password");
+                }
             }
+        } else {
+            returnError(sender, "Login must be at least 6 characters length");
         }
     }
     if (type != "login" && type !="register"){
