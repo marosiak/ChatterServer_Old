@@ -1,13 +1,17 @@
 #include "database.h"
 
-DataBase::DataBase(QObject *parent) : QObject(parent){
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+DataBase::DataBase(){
+    db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("accounts");
     if (!db.open()) {
         qDebug() << "ERROR WHILE OPENING DB";
     }
-
     execute("create table accounts (login varchar(20), password varchar(45))");
+
+}
+
+DataBase::~DataBase(){
+    db.close();
 }
 
 void DataBase::createAccount(QString login, QString password) {
@@ -45,7 +49,7 @@ QString DataBase::getPassword(QString login) {
         return "error"; // error
 }
 
-void DataBase::execute(QString cmd){
+void DataBase::execute(QString cmd) {
     QSqlQuery query;
     query.exec(cmd);
 }

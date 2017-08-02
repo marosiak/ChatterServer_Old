@@ -8,14 +8,24 @@
 class DataBase : public QObject {
     Q_OBJECT
 
+private:
+
+    DataBase(const DataBase&);
 public:
-    explicit DataBase(QObject *parent = nullptr);
+    DataBase();
+    static DataBase & getDatabase()
+        {
+            static DataBase database;
+            return database;
+        }
+
+    ~DataBase();
     void createAccount(QString login, QString password);
     bool accountExist(const QString& login) const; //pretty sure this isn't mutating anything
     QString getPassword(QString login);
 private:
     void execute(QString cmd);
-
+    QSqlDatabase db;
 signals:
 
 public slots:

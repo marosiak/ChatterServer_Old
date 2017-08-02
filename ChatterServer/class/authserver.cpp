@@ -81,13 +81,12 @@ void AuthServer::authRequestRecived(){
     qDebug() << "[Auth] Type of request: "<<type;
     qDebug() << "[Auth] Login: "<<login;
     qDebug() << "[Auth] Password: " << password;
-    database = new DataBase;
     if(type == "register"){
         // make account
-        if (database->accountExist(login) == false) {
+        if (DataBase::getDatabase().accountExist(login) == false) {
             if(login.length() >= 6){
                 if(password.length() >= 6){
-                    database->createAccount(login, password);
+                    DataBase::getDatabase().createAccount(login, password);
                     returnMessage(sender, "Account created succesfully");
                 } else {
                     returnError(sender, "Password must be at least 6 characters length");
@@ -102,8 +101,9 @@ void AuthServer::authRequestRecived(){
     if(type == "login"){
         // login
         if(login.length() >= 6) {
-            if(database->accountExist(login)){
-                QString realPassword = database->getPassword(login);
+
+            if(DataBase::getDatabase().accountExist(login)){
+                QString realPassword = DataBase::getDatabase().getPassword(login);
                 if (password == realPassword) {
                     //login
                     qDebug() << "[Auth] password for "<<login<<" is correct";
@@ -121,7 +121,6 @@ void AuthServer::authRequestRecived(){
     if (type != "login" && type !="register"){
         returnError(sender,"Wrong type of request Please report it to orzel1244@gmail.com");
     }
-    delete database;
 }
 
 int AuthServer::getPort() const { return port; }
