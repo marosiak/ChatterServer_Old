@@ -8,27 +8,33 @@
 class DataBase : public QObject {
     Q_OBJECT
 
-private:
-
+      private:
     DataBase(const DataBase&);
-public:
+
+      public:
     DataBase();
-    static DataBase & getDatabase()
-        {
-            static DataBase database;
-            return database;
-        }
+    static DataBase& getDatabase() {
+        static DataBase database;
+        return database;
+    }
 
     ~DataBase();
     void createAccount(QString login, QString password);
-    bool accountExist(const QString& login) const; //pretty sure this isn't mutating anything
+    bool accountExist(const QString& login)
+        const;  // pretty sure this isn't mutating anything
+    void createFriendListTable(QString name);
+    void insertIntoFriendListTable(QString targetTable, QString value);
+    bool checkIfValueIsInTable(QString table, QString value);
     QString getPassword(QString login);
-private:
+    QString getRecords(QString table);
+    void removeRecord(QString table, QString value);
+
+      private:
     void execute(QString cmd);
     QSqlDatabase db;
-signals:
+      signals:
 
-public slots:
+      public slots:
 };
 
-#endif // DATABASE_H
+#endif  // DATABASE_H
