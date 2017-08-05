@@ -1,6 +1,7 @@
 #ifndef AUTHSERVER_H
 #define AUTHSERVER_H
 
+#include <./class/authorizeduser.h>
 #include <./class/database.h>
 #include <QCryptographicHash>
 #include <QJsonDocument>
@@ -17,17 +18,17 @@ class AuthServer : public QObject {
 public:
     explicit AuthServer(QObject* parent = nullptr);
     void start();
-    void returnError(QHostAddress targetIp,
-                     QString error);  // TODO zrobić porządne zwracanie
+    void returnError(QHostAddress targetIp, QString error);
     void returnMessage(QHostAddress targetIp, QString type, QString msg);
     bool checkIfAccountIsAutorized(QString token);
-    int getPort() const;
-    void setPort(int value);
+    quint16 getPort() const;
+    void setPort(quint16 value);
     QString generateToken();
     int getTimeOut() const;
     void setTimeOut(int value);
     void updateTokenTime(QString token);
     void logOff(QString token);
+    QString returnNameFromToken(QString token);
 signals:
 
 public slots:
@@ -39,13 +40,13 @@ private:
     int timeOut;
     QUdpSocket* socket;
     QUdpSocket* returnSocket;
-    int port;
-    void addAuthorizedAccount(QString token);
+    quint16 port;
+    void addAuthorizedAccount(QString token, QString name);
     QString getPassword(const QString login);
     int returnPort, requestPort;
-    QMap<QString, int> authorizedAccounts;
     QJsonObject objectFromString(const QString& in);
     DataBase* database;
+    QVector<AuthorizedUser> authUsers;
 };
 
 #endif  // AUTHSERVER_H

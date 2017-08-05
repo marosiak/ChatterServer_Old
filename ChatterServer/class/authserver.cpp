@@ -45,15 +45,19 @@ void AuthServer::returnMessage(QHostAddress targetIp, QString type,
     qDebug() << "[Auth Message] " << msg << " to " << targetIp.toString();
 }
 
-void AuthServer::addAuthorizedAccount(QString token) {
-    authorizedAccounts.insert(token, 0);
+void AuthServer::addAuthorizedAccount(QString token, QString name) {
+    AuthorizedUser* au = new AuthorizedUser;
+    au->setName(name);
+    au->setTime(0);
+    au->setToken(token);
+
+    authUsers.append(*au);
+    delete au;
 }
 
 bool AuthServer::checkIfAccountIsAutorized(QString token) {
-    for (const auto& e : authorizedAccounts.toStdMap()) {
-        if (token == e.first) {
-            return true;  // authorized
-        }
+    for (int i = 0; i < authUsers.size(); ++i) {
+        if (authUsers.at(i).getToken() == token) { return true; }
     }
     return false;
 }
@@ -127,7 +131,7 @@ void AuthServer::authRequestRecived() {
                     qDebug()
                         << "[Auth] password for " << login << " is correct";
                     QString token = generateToken();
-                    addAuthorizedAccount(token);
+                    addAuthorizedAccount(token, login);
                     returnMessage(sender, "message", "Access Granted");
                     returnMessage(sender, "tokenTransfer", token);
                 } else {
@@ -148,19 +152,38 @@ int AuthServer::getTimeOut() const { return timeOut; }
 void AuthServer::setTimeOut(int value) { timeOut = value; }
 
 void AuthServer::updateTokenTime(QString token) {
-    for (const auto& e : authorizedAccounts.toStdMap()) {
-        if (e.first == token) { authorizedAccounts[token] = 0; }
+    qDebug() << "updateTokenTime";
+    for (int i = 0; i < authUsers.size(); ++i) {
+        if (authUsers.at(i).getToken() == token) {
+            AuthorizedUser* aut = new AuthorizedUser;
+            aut->setName(authUsers.at(i).getName());
+            aut->setTime(0);
+            aut->setToken(authUsers.at(i).getToken());
+            authUsers.replace(i, *aut);
+            delete aut;
+        }
     }
 }
 
 void AuthServer::logOff(QString token) {
-    for (const auto& e : authorizedAccounts.toStdMap()) {
-        if (e.first == token) { authorizedAccounts.remove(e.first); }
+    for (int i = 0; i <= authUsers.size(); i++) {
+        if (authUsers.at(i).getToken() == token) { authUsers.remove(i); }
     }
 }
 
-int AuthServer::getPort() const { return port; }
-void AuthServer::setPort(int value) { port = value; }
+QString AuthServer::returnNameFromToken(QString token) {
+    qDebug() << "returnNameFromToken";
+    for (int i = 0; i <= authUsers.size(); i++) {
+        if (authUsers.at(i).getToken() == token) {
+            return authUsers.at(i).getName();
+        }
+    }
+    qDebug() << "Can't find name of user with that token";
+    return "Can't find name of user with that token";
+}
+
+quint16 AuthServer::getPort() const { return port; }
+void AuthServer::setPort(quint16 value) { port = value; }
 
 QString AuthServer::generateToken() {
     // TODO secure token google ~ Rafał Pokrywka
@@ -173,18 +196,22 @@ QString AuthServer::generateToken() {
 }
 
 void AuthServer::removeTimeOutHashes() {
-    for (const auto& e : authorizedAccounts.toStdMap()) {
-        if (e.second >= getTimeOut()) {
-            // remove
-            qDebug() << "Account " << e.first << " timed out";
-            authorizedAccounts.remove(e.first);
-        }
+    qDebug() << "removeTimeOutHashes";
+    for (int i = 0; i < authUsers.size(); i++) {
+        if (authUsers.at(i).getTime() >= getTimeOut()) { authUsers.remove(i); }
     }
-    qDebug() << authorizedAccounts.count() << "clients online";
+
+    qDebug() << authUsers.size() << "clients online";
 }
 
 void AuthServer::addOneMinToHashes() {
-    for (const auto& e : authorizedAccounts.toStdMap()) {
-        authorizedAccounts[e.first] = e.second + 1;
+    qDebug() << "addOneMinToHashes";
+    for (int i = 0; i < authUsers.size(); i++) {
+        AuthorizedUser* au = new AuthorizedUser;
+        au->setName(authUsers.at(i).getName());
+        au->setTime(authUsers.at(i).getTime() + 1);
+        au->setToken(authUsers.at(i).getToken());
+        authUsers.replace(i, *au);
+        delete au;
     }
 }

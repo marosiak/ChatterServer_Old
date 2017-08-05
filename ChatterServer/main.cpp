@@ -1,5 +1,6 @@
 #include <./class/authserver.h>
 #include <./class/database.h>
+#include <./class/friendsmanager.h>
 #include <./class/settings.h>
 #include <QCoreApplication>
 #include <QHostAddress>

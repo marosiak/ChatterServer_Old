@@ -14,7 +14,9 @@ TEMPLATE = app
 SOURCES += main.cpp \
     class/authserver.cpp \
     class/database.cpp \
-    class/settings.cpp
+    class/settings.cpp \
+    class/friendsmanager.cpp \
+    class/authorizeduser.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -30,4 +32,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 HEADERS += \
     class/authserver.h \
     class/database.h \
-    class/settings.h
+    class/settings.h \
+    class/friendsmanager.h \
+    class/authorizeduser.h
