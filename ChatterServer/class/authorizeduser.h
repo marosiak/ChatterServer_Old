@@ -5,6 +5,7 @@
 
 class AuthorizedUser {
 public:
+    AuthorizedUser();
     QString getToken() const;
     void setToken(const QString& value);
 

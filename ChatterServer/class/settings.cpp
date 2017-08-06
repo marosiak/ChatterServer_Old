@@ -2,7 +2,7 @@
 
 Settings::Settings() {}
 
-int Settings::getPort() const { return port; }
+quint16 Settings::getPort() const { return port; }
 
 void Settings::setPort(int value) { port = value; }
 

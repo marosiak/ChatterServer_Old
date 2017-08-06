@@ -1,5 +1,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
+#include <QObject>
 
 class Settings {
 private:
@@ -13,14 +14,14 @@ public:
     }
 
 public:
-    int getPort() const;
+    quint16 getPort() const;
     void setPort(int value);
 
     int getTimeOut() const;
     void setTimeOut(int value);
 
 private:
-    int port;
+    quint16 port;
     int timeOut;
 };
 

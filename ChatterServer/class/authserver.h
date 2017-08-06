@@ -3,9 +3,11 @@
 
 #include <./class/authorizeduser.h>
 #include <./class/database.h>
+#include <./class/friendsmanager.h>
 #include <QCryptographicHash>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QList>
 #include <QObject>
 #include <QTimer>
 #include <QUdpSocket>
@@ -15,8 +17,18 @@
 class AuthServer : public QObject {
     Q_OBJECT
 
+private:
+    AuthServer(const AuthServer&);
+
 public:
-    explicit AuthServer(QObject* parent = nullptr);
+    AuthServer();
+    static AuthServer& getAuthServer() {
+        static AuthServer authS;
+        return authS;
+    }
+
+    QVector<AuthorizedUser> authUsers;
+
     void start();
     void returnError(QHostAddress targetIp, QString error);
     void returnMessage(QHostAddress targetIp, QString type, QString msg);
@@ -41,12 +53,12 @@ private:
     QUdpSocket* socket;
     QUdpSocket* returnSocket;
     quint16 port;
+    void sendToClient(QHostAddress targetIp, QString msg);
     void addAuthorizedAccount(QString token, QString name);
     QString getPassword(const QString login);
     int returnPort, requestPort;
     QJsonObject objectFromString(const QString& in);
     DataBase* database;
-    QVector<AuthorizedUser> authUsers;
 };
 
 #endif  // AUTHSERVER_H

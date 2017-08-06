@@ -14,10 +14,10 @@ int main(int argc, char* argv[]) {
     Settings::getSettings().setPort(3433);
     Settings::getSettings().setTimeOut(2);
 
-    AuthServer authServer;
-    authServer.setPort(Settings::getSettings().getPort());
-    authServer.setTimeOut(Settings::getSettings().getTimeOut());
-    authServer.start();
+    AuthServer::getAuthServer().setPort(Settings::getSettings().getPort());
+    AuthServer::getAuthServer().setTimeOut(
+        Settings::getSettings().getTimeOut());
+    AuthServer::getAuthServer().start();
 
     return a.exec();
 }

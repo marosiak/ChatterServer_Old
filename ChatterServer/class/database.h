@@ -8,10 +8,10 @@
 class DataBase : public QObject {
     Q_OBJECT
 
-      private:
+private:
     DataBase(const DataBase&);
 
-      public:
+public:
     DataBase();
     static DataBase& getDatabase() {
         static DataBase database;
@@ -29,12 +29,12 @@ class DataBase : public QObject {
     QString getRecords(QString table);
     void removeRecord(QString table, QString value);
 
-      private:
+private:
     void execute(QString cmd);
     QSqlDatabase db;
-      signals:
+signals:
 
-      public slots:
+public slots:
 };
 
 #endif  // DATABASE_H

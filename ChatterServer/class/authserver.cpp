@@ -1,6 +1,6 @@
 #include "authserver.h"
 
-AuthServer::AuthServer(QObject* parent) : QObject(parent) {}
+AuthServer::AuthServer() {}
 
 void AuthServer::start() {
     // removeTimeOutHashes()
@@ -46,13 +46,11 @@ void AuthServer::returnMessage(QHostAddress targetIp, QString type,
 }
 
 void AuthServer::addAuthorizedAccount(QString token, QString name) {
-    AuthorizedUser* au = new AuthorizedUser;
-    au->setName(name);
-    au->setTime(0);
-    au->setToken(token);
-
-    authUsers.append(*au);
-    delete au;
+    AuthorizedUser au;
+    au.setName(name);
+    au.setTime(0);
+    au.setToken(token);
+    authUsers.append(au);
 }
 
 bool AuthServer::checkIfAccountIsAutorized(QString token) {
@@ -146,19 +144,48 @@ void AuthServer::authRequestRecived() {
     }
     if (type == "updateToken") { updateTokenTime(array[0].toString()); }
     if (type == "logOff") { logOff(array[0].toString()); }
+    if (type == "addFriend") {
+        QString token = array[0].toString();
+        QString friendName = array[1].toString();
+        FriendsManager* frm = new FriendsManager;
+        frm->addFriend(token, friendName);
+        delete frm;
+    }
+    if (type == "removeFriend") {
+        QString token = array[0].toString();
+        QString friendName = array[1].toString();
+        FriendsManager* frm = new FriendsManager;
+        frm->removeFriend(token, friendName);
+        delete frm;
+    }
+    if (type == "getFriendsList") {
+        QString token = array[0].toString();
+        FriendsManager* frm = new FriendsManager;
+        QString msg = frm->getFriends(token);
+        sendToClient(sender, msg);
+        delete frm;
+    }
+}
+
+void AuthServer::sendToClient(QHostAddress targetIp, QString msg) {
+    returnSocket = new QUdpSocket(this);
+    returnSocket->bind(targetIp, getPort() - 1);
+    QByteArray Data;
+    Data.append(msg);
+    returnSocket->writeDatagram(Data, targetIp, getPort() - 1);
 }
 
 int AuthServer::getTimeOut() const { return timeOut; }
 void AuthServer::setTimeOut(int value) { timeOut = value; }
 
 void AuthServer::updateTokenTime(QString token) {
-    qDebug() << "updateTokenTime";
     for (int i = 0; i < authUsers.size(); ++i) {
         if (authUsers.at(i).getToken() == token) {
             AuthorizedUser* aut = new AuthorizedUser;
             aut->setName(authUsers.at(i).getName());
             aut->setTime(0);
             aut->setToken(authUsers.at(i).getToken());
+
             authUsers.replace(i, *aut);
             delete aut;
         }
@@ -167,19 +194,15 @@ void AuthServer::updateTokenTime(QString token) {
 
 void AuthServer::logOff(QString token) {
     for (int i = 0; i <= authUsers.size(); i++) {
-        if (authUsers.at(i).getToken() == token) { authUsers.remove(i); }
+        if (authUsers.at(i).getToken() == token) { authUsers.removeAt(i); }
     }
 }
 
 QString AuthServer::returnNameFromToken(QString token) {
-    qDebug() << "returnNameFromToken";
-    for (int i = 0; i <= authUsers.size(); i++) {
-        if (authUsers.at(i).getToken() == token) {
-            return authUsers.at(i).getName();
-        }
+    for (const AuthorizedUser& au : authUsers) {
+        if (au.getToken() == token) { return au.getName(); }
     }
-    qDebug() << "Can't find name of user with that token";
-    return "Can't find name of user with that token";
+    return "error";
 }
 
 quint16 AuthServer::getPort() const { return port; }
@@ -188,7 +211,7 @@ void AuthServer::setPort(quint16 value) { port = value; }
 QString AuthServer::generateToken() {
     // TODO secure token google ~ Rafał Pokrywka
     QString token;
-    for (int i = 1; i <= 64; i++) {
+    for (int i = 1; i <= 16; i++) {
         int liczba = (std::rand() % 10);
         token.append(QString::number(liczba));
     }
@@ -196,20 +219,22 @@ QString AuthServer::generateToken() {
 }
 
 void AuthServer::removeTimeOutHashes() {
-    qDebug() << "removeTimeOutHashes";
     for (int i = 0; i < authUsers.size(); i++) {
-        if (authUsers.at(i).getTime() >= getTimeOut()) { authUsers.remove(i); }
+        if (authUsers.at(i).getTime() >= getTimeOut()) {
+            authUsers.removeAt(i);
+        }
     }
 
     qDebug() << authUsers.size() << "clients online";
 }
 
 void AuthServer::addOneMinToHashes() {
-    qDebug() << "addOneMinToHashes";
     for (int i = 0; i < authUsers.size(); i++) {
         AuthorizedUser* au = new AuthorizedUser;
         au->setName(authUsers.at(i).getName());
+
         au->setTime(authUsers.at(i).getTime() + 1);
+
         au->setToken(authUsers.at(i).getToken());
         authUsers.replace(i, *au);
         delete au;

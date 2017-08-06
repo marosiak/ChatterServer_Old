@@ -1,5 +1,7 @@
 #include "authorizeduser.h"
 
+AuthorizedUser::AuthorizedUser() {}
+
 QString AuthorizedUser::getToken() const { return token; }
 
 void AuthorizedUser::setToken(const QString& value) { token = value; }
