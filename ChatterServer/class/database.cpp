@@ -100,6 +100,52 @@ void DataBase::removeRecord(QString table, QString value) {
     execute(cmd);
 }
 
+QString DataBase::getUsersStartingAt(QString table, QString name) {
+    QSqlQuery query;
+    QString cmd = QString("SELECT login FROM %1 WHERE \"login\" LIKE '%2%'")
+                      .arg(table)
+                      .arg(name);
+    query.exec(cmd);
+    QString output;
+    while (query.next()) {
+        QString p = query.value(0).toString();
+        QString f = QString("\"%1\",").arg(p);
+        output.append(f);
+    }
+    QString newOut;
+    for (int i = 0; i < output.length() - 1; i++) {  // remove last char ,
+        newOut.append(output[i]);
+    }
+    return newOut;
+}
+
+QString DataBase::getNonFriends(QString token, QString part) {
+    QSqlQuery query;
+    QString cmd =
+        QString("SELECT login FROM accounts WHERE \"login\" LIKE '%2%'")
+            .arg(part);
+    query.exec(cmd);
+    QString output;
+    QString nick = AuthServer::getAuthServer().returnNameFromToken(token);
+    int friendsFound = 0;
+    while (query.next()) {
+        if (friendsFound < 15) {
+            if (checkIfValueIsInTable(nick, query.value(0).toString()) ==
+                false) {
+                QString p = query.value(0).toString();
+                QString f = QString("\"%1\",").arg(p);
+                output.append(f);
+                friendsFound++;
+            }
+        }
+    }
+    QString newOut;
+    for (int i = 0; i < output.length() - 1; i++) {  // remove last char ,
+        newOut.append(output[i]);
+    }
+    return newOut;
+}
+
 void DataBase::execute(QString cmd) {
     QSqlQuery query;
     query.exec(cmd);

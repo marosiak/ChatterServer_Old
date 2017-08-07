@@ -53,6 +53,15 @@ void AuthServer::addAuthorizedAccount(QString token, QString name) {
     authUsers.append(au);
 }
 
+QString AuthServer::getSearchResult(QString token, QString part) {
+    //    QString names =
+    //        DataBase::getDatabase().getUsersStartingAt("accounts", part);
+    QString names = DataBase::getDatabase().getNonFriends(token, part);
+    QString output =
+        QString("{\"type\": \"searchResult\",\"values\": [%1]}").arg(names);
+    return output;
+}
+
 bool AuthServer::checkIfAccountIsAutorized(QString token) {
     for (int i = 0; i < authUsers.size(); ++i) {
         if (authUsers.at(i).getToken() == token) { return true; }
@@ -159,11 +168,20 @@ void AuthServer::authRequestRecived() {
         delete frm;
     }
     if (type == "getFriendsList") {
-        QString token = array[0].toString();
         FriendsManager* frm = new FriendsManager;
-        QString msg = frm->getFriends(token);
+        QString msg = frm->getFriends(array[0].toString());
         sendToClient(sender, msg);
         delete frm;
+    }
+    if (type == "getSearchResult") {
+        QString msg = getSearchResult(array[0].toString(), array[1].toString());
+        sendToClient(sender, msg);
+    }
+    if (type == "getFriendsResult") {
+        FriendsManager* frm = new FriendsManager;
+        QString msg = frm->getFriendsResult(
+            array[0].toString(), array[1].toString());  // token + part
+        sendToClient(sender, msg);
     }
 }
 
@@ -224,8 +242,6 @@ void AuthServer::removeTimeOutHashes() {
             authUsers.removeAt(i);
         }
     }
-
-    qDebug() << authUsers.size() << "clients online";
 }
 
 void AuthServer::addOneMinToHashes() {

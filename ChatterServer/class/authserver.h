@@ -28,7 +28,7 @@ public:
     }
 
     QVector<AuthorizedUser> authUsers;
-
+    QString getSearchResult(QString token, QString part);
     void start();
     void returnError(QHostAddress targetIp, QString error);
     void returnMessage(QHostAddress targetIp, QString type, QString msg);
@@ -58,7 +58,7 @@ private:
     QString getPassword(const QString login);
     int returnPort, requestPort;
     QJsonObject objectFromString(const QString& in);
-    DataBase* database;
+    // DataBase* database;
 };
 
 #endif  // AUTHSERVER_H

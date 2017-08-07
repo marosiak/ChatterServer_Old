@@ -26,6 +26,15 @@ void FriendsManager::removeFriend(QString token, QString friendName) {
     }
 }
 
+QString FriendsManager::getFriendsResult(QString token, QString part) {
+    QString username = AuthServer::getAuthServer().returnNameFromToken(token);
+    QString names = DataBase::getDatabase().getUsersStartingAt(username, part);
+    QString output =
+        QString("{\"type\": \"friendsListRespond\",\"values\": [%1]}")
+            .arg(names);
+    return output;
+}
+
 QString FriendsManager::getFriends(QString token) {
     QString name = AuthServer::getAuthServer().returnNameFromToken(token);
     QString friends = DataBase::getDatabase().getRecords(name);

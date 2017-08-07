@@ -1,6 +1,7 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
+#include <./class/authserver.h>
 #include <QObject>
 #include <QString>
 #include <QtSql>
@@ -28,6 +29,8 @@ public:
     QString getPassword(QString login);
     QString getRecords(QString table);
     void removeRecord(QString table, QString value);
+    QString getUsersStartingAt(QString table, QString name);
+    QString getNonFriends(QString token, QString part);
 
 private:
     void execute(QString cmd);

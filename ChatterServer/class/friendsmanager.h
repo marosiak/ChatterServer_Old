@@ -10,6 +10,7 @@ public:
     explicit FriendsManager(QObject* parent = nullptr);
     void addFriend(QString token, QString friendName);
     void removeFriend(QString token, QString friendName);
+    QString getFriendsResult(QString token, QString part);
     QString getFriends(QString token);
 signals:
 
