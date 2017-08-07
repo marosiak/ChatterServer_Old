@@ -4,9 +4,9 @@ This is live chat made using UDP connection. The app is inspired polish film "Ha
 # Documentation
 ## Creating an account
 >{
->  "type": "register",
->  "vales": [
->    "login",
+>  "type": "register",\n
+>  "vales": [\n
+>    "login",\n
 >    "password"
 >  ]
 >}
