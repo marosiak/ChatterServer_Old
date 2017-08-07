@@ -1,3 +1,7 @@
+# History
+As first I wanted to make console communicator client-client (Like the communicator from first few minuts of polish movie called "Haker") like p2p, then I changed my mind to make client-server. I but 
+at some point I decided to make GUI instand of console interface
+
 # Config
 The config is generated automaticly in serverDir/config/config.json
 **The config doesn't work at this moment as the application is under development, but you're going to see it in next commit**
@@ -11,10 +15,6 @@ The config is generated automaticly in serverDir/config/config.json
 **port** - port of the server on which the server is going to work.
 **timeout** - time after which client will be kicked if he will not send "updateToken" request, it's for safety and to avoid overloading, minimum is **1 min**, and max is **10 mins**
 **maxSearchResult** - When client is calling **getSearchResult** to find some friends, he could crash the server if there would be for example 10000000 of users, and he would do it like 10 times, so basicly the varible specify how many responds you can recive from the method
-
-# History
-As first I wanted to make console communicator client-client (Like the communicator from first few minuts of polish movie called "Haker") like p2p, then I changed my mind to make client-server. I but 
-at some point I decided to make GUI instand of console interface
 
 # Documentation
 ## Creating an account
