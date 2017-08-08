@@ -12,9 +12,9 @@ The config is generated automaticly in serverDir/config/config.json
   "maxSearchResult": "20"
 }
 ```
-**port** - port of the server on which the server is going to work.
-**timeout** - time after which client will be kicked if he will not send "updateToken" request, it's for safety and to avoid overloading, minimum is **1 min**, and max is **10 mins**
-**maxSearchResult** - When client is calling **getSearchResult** to find some friends, he could crash the server if there would be for example 10000000 of users, and he would do it like 10 times, so basicly the varible specify how many responds you can recive from the method
+--**port** - port of the server on which the server is going to work.
+--**timeout** - time after which client will be kicked if he will not send "updateToken" request, it's for safety and to avoid overloading, minimum is **1 min**, and max is **10 mins**
+--**maxSearchResult** - When client is calling **getSearchResult** to find some friends, he could crash the server if there would be for example 10000000 of users, and he would do it like 10 times, so basicly the varible specify how many responds you can recive from the method
 
 # Documentation
 ## Creating an account
