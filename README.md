@@ -155,3 +155,25 @@ Actually the same as finding friends, but this return your friends from part of 
   ]
 }
 ```
+## Getting user status
+```json
+{
+  "type": "getStatus",
+  "vales": [
+    "user1",
+    "user2",
+    "user3"
+  ]
+}
+```
+### example response
+```json
+{
+  "type": "statusRespond",
+  "vales": [
+    "true",
+    "true",
+    "false"
+  ]
+}
+```
