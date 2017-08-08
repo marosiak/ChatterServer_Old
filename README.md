@@ -170,7 +170,7 @@ Actually the same as finding friends, but this return your friends from part of 
 ```json
 {
   "type": "statusRespond",
-  "vales": [
+  "values": [
     "true",
     "true",
     "false"
