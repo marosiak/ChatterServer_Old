@@ -160,9 +160,7 @@ Actually the same as finding friends, but this return your friends from part of 
 {
   "type": "getStatus",
   "vales": [
-    "user1",
-    "user2",
-    "user3"
+    "user_name"
   ]
 }
 ```
@@ -171,9 +169,8 @@ Actually the same as finding friends, but this return your friends from part of 
 {
   "type": "statusRespond",
   "values": [
-    "true",
-    "true",
-    "false"
+    "theUserName",
+    "online"
   ]
 }
 ```
