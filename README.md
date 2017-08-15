@@ -190,7 +190,7 @@ Actually the same as finding friends, but this return your friends from part of 
 The target is going to recive this:
 ```json
 {
-  "type": "message",
+  "type": "messageRecived",
   "values": [
     "userName of person which sent u the message",
     "the Message",
