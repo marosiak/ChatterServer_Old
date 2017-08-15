@@ -174,3 +174,27 @@ Actually the same as finding friends, but this return your friends from part of 
   ]
 }
 ```
+
+## Send message
+```json
+{
+  "type": "sendMessage",
+  "values": [
+    "tokenOfSender",
+    "targetUserName",
+    "The message (We all know you're going to use lorem ipsum for test)"
+  ]
+}
+```
+### example response
+The target is going to recive this:
+```json
+{
+  "type": "message",
+  "values": [
+    "userName of player which sent u the message",
+    "the Message",
+    "time"
+  ]
+}
+```
