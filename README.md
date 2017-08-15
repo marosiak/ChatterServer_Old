@@ -192,7 +192,7 @@ The target is going to recive this:
 {
   "type": "message",
   "values": [
-    "userName of player which sent u the message",
+    "userName of person which sent u the message",
     "the Message",
     "time"
   ]
